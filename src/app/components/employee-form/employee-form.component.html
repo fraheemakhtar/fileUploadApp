@@ -1,0 +1,220 @@
+<!-- ===== Page Header ===== -->
+<div class="page-header d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+  <div>
+    <h2 class="mb-1">
+      <i class="bi {{ isEditMode ? 'bi-pencil-square' : 'bi-person-plus-fill' }} me-2"></i>
+      {{ isEditMode ? 'Edit Employee' : 'Add New Employee' }}
+    </h2>
+    <small class="opacity-75">
+      {{ isEditMode ? 'Update employee information below' : 'Fill in the details to add a new employee' }}
+    </small>
+  </div>
+  <a routerLink="/employees" class="btn btn-light">
+    <i class="bi bi-arrow-left me-1"></i>Back to List
+  </a>
+</div>
+
+<!-- ===== Form Card ===== -->
+<div class="card shadow-sm">
+  <div class="card-body p-4">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate autocomplete="off">
+
+      <!-- ── Section: Personal Info ── -->
+      <h6 class="text-primary fw-semibold mb-3">
+        <i class="bi bi-person-circle me-2"></i>Personal Information
+      </h6>
+      <div class="row g-3">
+
+        <!-- First Name -->
+        <div class="col-md-6">
+          <label class="form-label">First Name <span class="text-danger">*</span></label>
+          <input type="text" class="form-control"
+            formControlName="firstName" placeholder="e.g. John"
+            [ngClass]="{'is-invalid': isInvalid('firstName'), 'is-valid': isValid('firstName')}">
+          <div class="invalid-feedback">
+            <span *ngIf="f['firstName'].errors?.['required']">First name is required.</span>
+            <span *ngIf="f['firstName'].errors?.['minlength']">At least 2 characters.</span>
+            <span *ngIf="f['firstName'].errors?.['maxlength']">Max 50 characters.</span>
+          </div>
+        </div>
+
+        <!-- Last Name -->
+        <div class="col-md-6">
+          <label class="form-label">Last Name <span class="text-danger">*</span></label>
+          <input type="text" class="form-control"
+            formControlName="lastName" placeholder="e.g. Smith"
+            [ngClass]="{'is-invalid': isInvalid('lastName'), 'is-valid': isValid('lastName')}">
+          <div class="invalid-feedback">
+            <span *ngIf="f['lastName'].errors?.['required']">Last name is required.</span>
+            <span *ngIf="f['lastName'].errors?.['minlength']">At least 2 characters.</span>
+          </div>
+        </div>
+
+        <!-- Gender -->
+        <div class="col-md-6">
+          <label class="form-label d-block">Gender <span class="text-danger">*</span></label>
+          <div class="d-flex gap-3 py-1">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" formControlName="gender" id="gMale" value="Male">
+              <label class="form-check-label" for="gMale"><i class="bi bi-gender-male text-primary me-1"></i>Male</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" formControlName="gender" id="gFemale" value="Female">
+              <label class="form-check-label" for="gFemale"><i class="bi bi-gender-female text-danger me-1"></i>Female</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" formControlName="gender" id="gOther" value="Other">
+              <label class="form-check-label" for="gOther"><i class="bi bi-gender-ambiguous text-warning me-1"></i>Other</label>
+            </div>
+          </div>
+          <div class="text-danger small mt-1" *ngIf="isInvalid('gender')">
+            <i class="bi bi-exclamation-circle me-1"></i>Please select a gender.
+          </div>
+        </div>
+
+        <!-- Address -->
+        <div class="col-md-6">
+          <label class="form-label">Address <span class="text-danger">*</span></label>
+          <textarea class="form-control" rows="2" formControlName="address"
+            placeholder="Street, City, State ZIP"
+            [ngClass]="{'is-invalid': isInvalid('address'), 'is-valid': isValid('address')}"></textarea>
+          <div class="invalid-feedback">
+            <span *ngIf="f['address'].errors?.['required']">Address is required.</span>
+            <span *ngIf="f['address'].errors?.['minlength']">At least 10 characters.</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── Section: Contact Info ── -->
+      <div class="section-divider"></div>
+      <h6 class="text-primary fw-semibold mb-3">
+        <i class="bi bi-envelope-at me-2"></i>Contact Information
+      </h6>
+      <div class="row g-3">
+
+        <!-- Email -->
+        <div class="col-md-6">
+          <label class="form-label">Email Address <span class="text-danger">*</span></label>
+          <div class="input-group"
+            [ngClass]="{'is-invalid': isInvalid('email')}">
+            <span class="input-group-text bg-light"><i class="bi bi-envelope-fill text-muted"></i></span>
+            <input type="email" class="form-control" formControlName="email"
+              placeholder="e.g. john@company.com"
+              [ngClass]="{'is-invalid': isInvalid('email'), 'is-valid': isValid('email')}">
+          </div>
+          <div class="invalid-feedback d-block" *ngIf="isInvalid('email')">
+            <span *ngIf="f['email'].errors?.['required']">Email is required.</span>
+            <span *ngIf="f['email'].errors?.['email']">Enter a valid email address.</span>
+          </div>
+        </div>
+
+        <!-- Phone -->
+        <div class="col-md-6">
+          <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+          <div class="input-group">
+            <span class="input-group-text bg-light"><i class="bi bi-telephone-fill text-muted"></i></span>
+            <input type="tel" class="form-control" formControlName="phone"
+              placeholder="10–12 digits e.g. 9876543210"
+              [ngClass]="{'is-invalid': isInvalid('phone'), 'is-valid': isValid('phone')}">
+          </div>
+          <div class="invalid-feedback d-block" *ngIf="isInvalid('phone')">
+            <span *ngIf="f['phone'].errors?.['required']">Phone is required.</span>
+            <span *ngIf="f['phone'].errors?.['pattern']">Enter 10–12 digit number (digits only).</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── Section: Job Details ── -->
+      <div class="section-divider"></div>
+      <h6 class="text-primary fw-semibold mb-3">
+        <i class="bi bi-briefcase-fill me-2"></i>Job Details
+      </h6>
+      <div class="row g-3">
+
+        <!-- Department -->
+        <div class="col-md-4">
+          <label class="form-label">Department <span class="text-danger">*</span></label>
+          <select class="form-select" formControlName="department"
+            [ngClass]="{'is-invalid': isInvalid('department'), 'is-valid': isValid('department')}">
+            <option value="" disabled>— Select Department —</option>
+            <option *ngFor="let d of departments" [value]="d">{{ d }}</option>
+          </select>
+          <div class="invalid-feedback">Please select a department.</div>
+        </div>
+
+        <!-- Position -->
+        <div class="col-md-4">
+          <label class="form-label">Position <span class="text-danger">*</span></label>
+          <select class="form-select" formControlName="position"
+            [ngClass]="{'is-invalid': isInvalid('position'), 'is-valid': isValid('position')}">
+            <option value="" disabled>— Select Position —</option>
+            <option *ngFor="let p of positions" [value]="p">{{ p }}</option>
+          </select>
+          <div class="invalid-feedback">Please select a position.</div>
+        </div>
+
+        <!-- Status -->
+        <div class="col-md-4">
+          <label class="form-label">Status <span class="text-danger">*</span></label>
+          <select class="form-select" formControlName="status"
+            [ngClass]="{'is-invalid': isInvalid('status'), 'is-valid': isValid('status')}">
+            <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+          </select>
+          <div class="invalid-feedback">Status is required.</div>
+        </div>
+
+        <!-- Salary -->
+        <div class="col-md-6">
+          <label class="form-label">Salary (USD) <span class="text-danger">*</span></label>
+          <div class="input-group">
+            <span class="input-group-text bg-light"><i class="bi bi-currency-dollar text-success fw-bold"></i></span>
+            <input type="number" class="form-control" formControlName="salary"
+              placeholder="e.g. 75000" min="1000"
+              [ngClass]="{'is-invalid': isInvalid('salary'), 'is-valid': isValid('salary')}">
+          </div>
+          <div class="invalid-feedback d-block" *ngIf="isInvalid('salary')">
+            <span *ngIf="f['salary'].errors?.['required']">Salary is required.</span>
+            <span *ngIf="f['salary'].errors?.['min']">Minimum salary is $1,000.</span>
+            <span *ngIf="f['salary'].errors?.['max']">Maximum salary is $1,000,000.</span>
+          </div>
+        </div>
+
+        <!-- Join Date (Calendar) -->
+        <div class="col-md-6">
+          <label class="form-label">
+            <i class="bi bi-calendar3 me-1 text-primary"></i>
+            Join Date <span class="text-danger">*</span>
+          </label>
+          <input type="date" class="form-control" formControlName="joinDate"
+            [ngClass]="{'is-invalid': isInvalid('joinDate'), 'is-valid': isValid('joinDate')}">
+          <div class="invalid-feedback">Join date is required.</div>
+        </div>
+
+      </div>
+
+      <!-- ── Action Buttons ── -->
+      <div class="section-divider"></div>
+      <div class="d-flex flex-wrap gap-2">
+        <button type="submit" class="btn btn-primary px-4 fw-semibold">
+          <i class="bi {{ isEditMode ? 'bi-check2-square' : 'bi-person-check-fill' }} me-2"></i>
+          {{ isEditMode ? 'Update Employee' : 'Save Employee' }}
+        </button>
+        <button type="button" class="btn btn-outline-secondary" (click)="resetForm()">
+          <i class="bi bi-arrow-clockwise me-1"></i>Reset
+        </button>
+        <a routerLink="/employees" class="btn btn-outline-danger ms-auto">
+          <i class="bi bi-x-circle me-1"></i>Cancel
+        </a>
+      </div>
+
+      <!-- Validation Summary (shown only after submit attempt) -->
+      <div class="alert alert-danger mt-3 py-2" *ngIf="submitted && form.invalid">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        Please fix the highlighted errors before submitting.
+      </div>
+
+    </form>
+  </div>
+</div>

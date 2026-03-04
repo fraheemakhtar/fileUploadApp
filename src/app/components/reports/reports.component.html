@@ -1,0 +1,288 @@
+<!-- ===== Page Header ===== -->
+<div class="page-header d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+  <div>
+    <h2 class="mb-1"><i class="bi bi-bar-chart-fill me-2"></i>Reports &amp; Analytics</h2>
+    <small class="opacity-75">Filter, analyse, and export employee data</small>
+  </div>
+  <button class="btn btn-success fw-semibold" (click)="exportToCSV()" [disabled]="filteredEmployees.length === 0">
+    <i class="bi bi-file-earmark-spreadsheet me-2"></i>Export CSV
+  </button>
+</div>
+
+<!-- ===== Summary Stat Cards ===== -->
+<div class="row g-3 mb-4">
+
+  <!-- Total -->
+  <div class="col-6 col-md-3">
+    <div class="card stat-card border-0 shadow-sm h-100 bg-primary text-white">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <p class="mb-1 text-white-50 small text-uppercase fw-semibold">Total</p>
+            <div class="summary-number">{{ totalEmployees }}</div>
+          </div>
+          <i class="bi bi-people-fill fs-1 opacity-25"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active -->
+  <div class="col-6 col-md-3">
+    <div class="card stat-card border-0 shadow-sm h-100 bg-success text-white">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <p class="mb-1 text-white-50 small text-uppercase fw-semibold">Active</p>
+            <div class="summary-number">{{ activeCount }}</div>
+          </div>
+          <i class="bi bi-person-check-fill fs-1 opacity-25"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inactive -->
+  <div class="col-6 col-md-3">
+    <div class="card stat-card border-0 shadow-sm h-100 bg-danger text-white">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <p class="mb-1 text-white-50 small text-uppercase fw-semibold">Inactive</p>
+            <div class="summary-number">{{ inactiveCount }}</div>
+          </div>
+          <i class="bi bi-person-x-fill fs-1 opacity-25"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- On Leave -->
+  <div class="col-6 col-md-3">
+    <div class="card stat-card border-0 shadow-sm h-100 bg-warning">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <p class="mb-1 text-muted small text-uppercase fw-semibold">On Leave</p>
+            <div class="summary-number">{{ onLeaveCount }}</div>
+          </div>
+          <i class="bi bi-person-dash-fill fs-1 opacity-25"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== Salary & Department Row ===== -->
+<div class="row g-3 mb-4">
+
+  <!-- Salary Summary -->
+  <div class="col-md-4">
+    <div class="card shadow-sm h-100 border-0">
+      <div class="card-header bg-transparent fw-semibold">
+        <i class="bi bi-cash-stack me-2 text-success"></i>Salary Summary
+      </div>
+      <div class="card-body">
+        <dl class="row mb-0 small">
+          <dt class="col-6 text-muted">Average</dt>
+          <dd class="col-6 fw-semibold text-success">{{ avgSalary | currency:'USD':'symbol':'1.0-0' }}</dd>
+          <dt class="col-6 text-muted">Highest</dt>
+          <dd class="col-6 fw-semibold text-primary">{{ maxSalary | currency:'USD':'symbol':'1.0-0' }}</dd>
+          <dt class="col-6 text-muted">Total Payroll</dt>
+          <dd class="col-6 fw-semibold text-dark">{{ totalSalary | currency:'USD':'symbol':'1.0-0' }}</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <!-- Department Distribution -->
+  <div class="col-md-8">
+    <div class="card shadow-sm h-100 border-0">
+      <div class="card-header bg-transparent fw-semibold">
+        <i class="bi bi-diagram-3-fill me-2 text-primary"></i>Department Distribution
+      </div>
+      <div class="card-body">
+        <div *ngFor="let dept of departments" class="mb-2">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="small fw-semibold">{{ dept }}</span>
+            <span class="small text-muted">{{ getDeptCount(dept) }} ({{ getDeptPct(dept) }}%)</span>
+          </div>
+          <div class="progress dept-progress">
+            <div class="progress-bar" [style.width.%]="getDeptPct(dept)"
+              [style.background-color]="getDeptBarColor(dept)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== Filter Panel ===== -->
+<div class="card shadow-sm filter-card mb-4">
+  <div class="card-header bg-transparent d-flex justify-content-between align-items-center py-2">
+    <span class="fw-semibold text-primary"><i class="bi bi-sliders me-2"></i>Report Filters</span>
+    <button class="btn btn-sm btn-outline-secondary" (click)="clearFilters()">
+      <i class="bi bi-x-lg me-1"></i>Clear All
+    </button>
+  </div>
+  <div class="card-body py-3">
+    <div class="row g-3 align-items-end">
+
+      <!-- Search -->
+      <div class="col-lg-3 col-md-6">
+        <label class="form-label text-muted small mb-1">
+          <i class="bi bi-search me-1"></i>Search
+        </label>
+        <input type="text" class="form-control" placeholder="Name, email, position, phone…"
+          [(ngModel)]="searchTerm" (input)="applyFilters()">
+      </div>
+
+      <!-- Department Dropdown -->
+      <div class="col-lg-2 col-md-6">
+        <label class="form-label text-muted small mb-1">
+          <i class="bi bi-diagram-3 me-1"></i>Department
+        </label>
+        <select class="form-select" [(ngModel)]="departmentFilter" (change)="applyFilters()">
+          <option value="">All Departments</option>
+          <option *ngFor="let d of departments" [value]="d">{{ d }}</option>
+        </select>
+      </div>
+
+      <!-- Status Dropdown -->
+      <div class="col-lg-2 col-md-4">
+        <label class="form-label text-muted small mb-1">
+          <i class="bi bi-toggle-on me-1"></i>Status
+        </label>
+        <select class="form-select" [(ngModel)]="statusFilter" (change)="applyFilters()">
+          <option value="">All Statuses</option>
+          <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+        </select>
+      </div>
+
+      <!-- Gender Dropdown -->
+      <div class="col-lg-2 col-md-4">
+        <label class="form-label text-muted small mb-1">
+          <i class="bi bi-gender-ambiguous me-1"></i>Gender
+        </label>
+        <select class="form-select" [(ngModel)]="genderFilter" (change)="applyFilters()">
+          <option value="">All Genders</option>
+          <option *ngFor="let g of genders" [value]="g">{{ g }}</option>
+        </select>
+      </div>
+
+      <!-- Calendar: Join From -->
+      <div class="col-lg-2 col-md-4">
+        <label class="form-label text-muted small mb-1">
+          <i class="bi bi-calendar-event me-1"></i>Join From
+        </label>
+        <input type="date" class="form-control" [(ngModel)]="fromDate" (change)="applyFilters()">
+      </div>
+
+      <!-- Calendar: Join To -->
+      <div class="col-lg-1 col-md-4">
+        <label class="form-label text-muted small mb-1">
+          <i class="bi bi-calendar-check me-1"></i>To
+        </label>
+        <input type="date" class="form-control" [(ngModel)]="toDate" (change)="applyFilters()">
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===== Report Results Table ===== -->
+<div class="card shadow-sm">
+  <div class="card-header bg-transparent d-flex justify-content-between align-items-center py-2">
+    <span class="fw-semibold"><i class="bi bi-table me-2 text-primary"></i>Results</span>
+    <span class="badge bg-primary rounded-pill">{{ filteredEmployees.length }} records</span>
+  </div>
+
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-striped table-hover align-middle mb-0">
+
+        <thead class="table-dark">
+          <tr>
+            <th class="ps-3">#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Department</th>
+            <th>Position</th>
+            <th>Gender</th>
+            <th>Salary</th>
+            <th>Join Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let emp of filteredEmployees; let i = index">
+            <td class="ps-3 text-muted small">{{ i + 1 }}</td>
+            <td>
+              <span class="fw-semibold">{{ emp.firstName }} {{ emp.lastName }}</span>
+            </td>
+            <td class="text-muted small">{{ emp.email }}</td>
+            <td>
+              <span class="badge text-white" style="background-color: {{ getDeptBarColor(emp.department) }}">
+                {{ emp.department }}
+              </span>
+            </td>
+            <td>{{ emp.position }}</td>
+            <td>
+              <i class="bi me-1"
+                [ngClass]="{
+                  'bi-gender-male text-primary'    : emp.gender === 'Male',
+                  'bi-gender-female text-danger'   : emp.gender === 'Female',
+                  'bi-gender-ambiguous text-warning': emp.gender === 'Other'
+                }"></i>
+              {{ emp.gender }}
+            </td>
+            <td class="fw-semibold text-success">
+              {{ emp.salary | currency:'USD':'symbol':'1.0-0' }}
+            </td>
+            <td>
+              <i class="bi bi-calendar3 text-muted me-1 small"></i>
+              {{ emp.joinDate | date:'mediumDate' }}
+            </td>
+            <td>
+              <span class="badge rounded-pill" [ngClass]="getStatusClass(emp.status)">
+                {{ emp.status }}
+              </span>
+            </td>
+          </tr>
+
+          <!-- Empty state -->
+          <tr *ngIf="filteredEmployees.length === 0">
+            <td colspan="9" class="text-center py-5 text-muted">
+              <i class="bi bi-inbox display-5 d-block mb-3 opacity-50"></i>
+              <strong>No records match your filters</strong>
+              <p class="mb-0 small mt-1">Try adjusting or clearing the filter options</p>
+            </td>
+          </tr>
+        </tbody>
+
+        <!-- Summary footer row -->
+        <tfoot *ngIf="filteredEmployees.length > 0" class="table-secondary fw-semibold">
+          <tr>
+            <td colspan="6" class="ps-3">
+              Summary &mdash; <span class="text-primary">{{ filteredEmployees.length }} employees</span>
+            </td>
+            <td>
+              <span class="text-success me-2" title="Average">Avg: {{ avgSalary | currency:'USD':'symbol':'1.0-0' }}</span>
+            </td>
+            <td colspan="2"></td>
+          </tr>
+        </tfoot>
+
+      </table>
+    </div>
+  </div>
+
+  <div class="card-footer bg-transparent d-flex justify-content-end gap-2 py-2">
+    <button class="btn btn-success btn-sm" (click)="exportToCSV()" [disabled]="filteredEmployees.length === 0">
+      <i class="bi bi-download me-1"></i>Export CSV
+    </button>
+  </div>
+</div>

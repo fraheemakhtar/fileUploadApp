@@ -1,0 +1,46 @@
+<!-- ===== Top Navigation Bar ===== -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+  <div class="container-fluid px-4">
+
+    <!-- Brand -->
+    <a class="navbar-brand d-flex align-items-center gap-2" routerLink="/employees">
+      <i class="bi bi-people-fill fs-5"></i>
+      <span>EmpCRUD</span>
+    </a>
+
+    <!-- Mobile toggle -->
+    <button class="navbar-toggler border-0" type="button"
+      (click)="navbarCollapsed = !navbarCollapsed"
+      [attr.aria-expanded]="!navbarCollapsed">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Nav Links -->
+    <div class="collapse navbar-collapse" [class.show]="!navbarCollapsed">
+      <ul class="navbar-nav ms-auto gap-1">
+        <li class="nav-item">
+          <a class="nav-link px-3 rounded-2" routerLink="/employees" routerLinkActive="active bg-white bg-opacity-25 fw-semibold"
+            [routerLinkActiveOptions]="{exact: false}">
+            <i class="bi bi-people me-1"></i>Employees
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link px-3 rounded-2" routerLink="/reports" routerLinkActive="active bg-white bg-opacity-25 fw-semibold">
+            <i class="bi bi-bar-chart me-1"></i>Reports
+          </a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</nav>
+
+<!-- ===== Router Outlet ===== -->
+<div class="container-fluid px-4 py-4">
+  <router-outlet></router-outlet>
+</div>
+
+<!-- ===== Footer ===== -->
+<footer class="text-center text-muted py-3 border-top bg-white mt-auto">
+  <small><i class="bi bi-code-slash me-1"></i> Angular CRUD &mdash; Bootstrap 5 &bull; Reactive Forms &bull; Reports</small>
+</footer>

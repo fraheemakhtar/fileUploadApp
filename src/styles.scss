@@ -1,0 +1,105 @@
+/* ===== Global Styles ===== */
+body {
+  background-color: #f0f2f5;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ===== Avatar Circle ===== */
+.avatar-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* ===== Stat Cards ===== */
+.stat-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: default;
+}
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
+}
+
+/* ===== Department badge colors ===== */
+.badge-engineering { background-color: #0d6efd !important; }
+.badge-hr          { background-color: #6f42c1 !important; }
+.badge-finance     { background-color: #198754 !important; }
+.badge-marketing   { background-color: #fd7e14 !important; }
+.badge-sales       { background-color: #dc3545 !important; }
+.badge-operations  { background-color: #20c997 !important; }
+
+/* ===== Filter card ===== */
+.filter-card {
+  border-left: 4px solid #0d6efd;
+}
+
+/* ===== Table ===== */
+.table th {
+  white-space: nowrap;
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+}
+.table td {
+  vertical-align: middle;
+  font-size: 0.9rem;
+}
+
+/* ===== Navbar ===== */
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: 0.02em;
+}
+
+/* ===== Form ===== */
+.form-label {
+  font-size: 0.875rem;
+  margin-bottom: 4px;
+}
+.section-divider {
+  border-top: 2px solid #e9ecef;
+  margin: 1.5rem 0 1rem;
+}
+
+/* ===== Page header ===== */
+.page-header {
+  background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+  color: #fff;
+  padding: 1.25rem 1.5rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+.page-header h2 {
+  margin: 0;
+  font-weight: 700;
+}
+
+/* ===== Progress bar dept ===== */
+.dept-progress {
+  height: 8px;
+  border-radius: 4px;
+}
+
+/* ===== Report summary card ===== */
+.summary-number {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ===== Scrollable table on small screens ===== */
+@media (max-width: 768px) {
+  .table-responsive {
+    font-size: 0.8rem;
+  }
+}
